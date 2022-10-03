@@ -68,6 +68,7 @@ type Configuration struct {
 	PlmnSupportList      []models.PlmnId `yaml:"plmnSupportList,omitempty" valid:"required"`
 	GroupId              string          `yaml:"groupId,omitempty" valid:"type(string),minstringlength(1)"`
 	EapAkaSupiImsiPrefix bool            `yaml:"eapAkaSupiImsiPrefix,omitempty" valid:"type(bool),optional"`
+	OAuth                bool            `yaml:"OAuth,omitempty"`
 }
 
 func (c *Configuration) validate() (bool, error) {

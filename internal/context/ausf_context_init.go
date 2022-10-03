@@ -69,6 +69,8 @@ func InitAusfContext(context *AUSFContext) {
 	fmt.Println("ausf context = ", context)
 
 	context.EapAkaSupiImsiPrefix = configuration.EapAkaSupiImsiPrefix
+	// OAuth
+	context.OAuth = configuration.OAuth
 }
 
 func AddNfServices(serviceMap *map[models.ServiceName]models.NfService, config *factory.Config, context *AUSFContext) {

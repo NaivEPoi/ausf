@@ -1,11 +1,12 @@
 package consumer
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 
+	ausf_context "github.com/free5gc/ausf/internal/context"
 	"github.com/free5gc/ausf/internal/logger"
+	"github.com/free5gc/openapi"
 	"github.com/free5gc/openapi/Nnrf_NFDiscovery"
 	"github.com/free5gc/openapi/models"
 )
@@ -17,7 +18,7 @@ func SendSearchNFInstances(nrfUri string, targetNfType, requestNfType models.NfT
 	configuration.SetBasePath(nrfUri)
 	client := Nnrf_NFDiscovery.NewAPIClient(configuration)
 
-	result, rsp, rspErr := client.NFInstancesStoreApi.SearchNFInstances(context.TODO(),
+	result, rsp, rspErr := client.NFInstancesStoreApi.SearchNFInstances(openapi.CreateContext(ausf_context.GetSelf().OAuth, ausf_context.GetSelf().NfId, ausf_context.GetSelf().NrfUri, "AUSF"),
 		targetNfType, requestNfType, &param)
 	if rspErr != nil {
 		return nil, fmt.Errorf("NFInstancesStoreApi Response error: %+w", rspErr)

@@ -2,7 +2,6 @@ package producer
 
 import (
 	"bytes"
-	"context"
 	"crypto/sha256"
 	"encoding/base64"
 	"encoding/hex"
@@ -17,6 +16,7 @@ import (
 
 	ausf_context "github.com/free5gc/ausf/internal/context"
 	"github.com/free5gc/ausf/internal/logger"
+	"github.com/free5gc/openapi"
 	"github.com/free5gc/openapi/models"
 	"github.com/free5gc/util/httpwrapper"
 	"github.com/free5gc/util/ueauth"
@@ -81,7 +81,8 @@ func HandleUeAuthPostRequest(request *httpwrapper.Request) *httpwrapper.Response
 }
 
 // func UeAuthPostRequestProcedure(updateAuthenticationInfo models.AuthenticationInfo) (
-//    response *models.UeAuthenticationCtx, locationURI string, problemDetails *models.ProblemDetails) {
+//
+//	response *models.UeAuthenticationCtx, locationURI string, problemDetails *models.ProblemDetails) {
 func UeAuthPostRequestProcedure(updateAuthenticationInfo models.AuthenticationInfo) (*models.UeAuthenticationCtx,
 	string, *models.ProblemDetails,
 ) {
@@ -123,7 +124,7 @@ func UeAuthPostRequestProcedure(updateAuthenticationInfo models.AuthenticationIn
 
 	udmUrl := getUdmUrl(self.NrfUri)
 	client := createClientToUdmUeau(udmUrl)
-	authInfoResult, rsp, err := client.GenerateAuthDataApi.GenerateAuthData(context.Background(), supiOrSuci, authInfoReq)
+	authInfoResult, rsp, err := client.GenerateAuthDataApi.GenerateAuthData(openapi.CreateContext(ausf_context.GetSelf().OAuth, ausf_context.GetSelf().NfId, ausf_context.GetSelf().NrfUri, "AUSF"), supiOrSuci, authInfoReq)
 	if err != nil {
 		logger.UeAuthPostLog.Infoln(err.Error())
 		var problemDetails models.ProblemDetails

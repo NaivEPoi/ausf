@@ -1,7 +1,6 @@
 package producer
 
 import (
-	"context"
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/base64"
@@ -18,6 +17,7 @@ import (
 	ausf_context "github.com/free5gc/ausf/internal/context"
 	"github.com/free5gc/ausf/internal/logger"
 	"github.com/free5gc/ausf/internal/sbi/consumer"
+	"github.com/free5gc/openapi"
 	"github.com/free5gc/openapi/Nnrf_NFDiscovery"
 	Nudm_UEAU "github.com/free5gc/openapi/Nudm_UEAuthentication"
 	"github.com/free5gc/openapi/models"
@@ -135,7 +135,8 @@ func EapEncodeAttribute(attributeType string, data string) (string, error) {
 }
 
 // func eapAkaPrimePrf(ikPrime string, ckPrime string, identity string) (K_encr string, K_aut string, K_re string,
-//    MSK string, EMSK string) {
+//
+//	MSK string, EMSK string) {
 func eapAkaPrimePrf(ikPrime string, ckPrime string, identity string) ([]byte, []byte, []byte, []byte, []byte) {
 	keyAp := ikPrime + ckPrime
 
@@ -372,7 +373,7 @@ func sendAuthResultToUDM(id string, authType models.AuthType, success bool, serv
 	authEvent.NfInstanceId = self.GetSelfID()
 
 	client := createClientToUdmUeau(udmUrl)
-	_, _, confirmAuthErr := client.ConfirmAuthApi.ConfirmAuth(context.Background(), id, authEvent)
+	_, _, confirmAuthErr := client.ConfirmAuthApi.ConfirmAuth(openapi.CreateContext(ausf_context.GetSelf().OAuth, ausf_context.GetSelf().NfId, ausf_context.GetSelf().NrfUri, "AUSF"), id, authEvent)
 	return confirmAuthErr
 }
 

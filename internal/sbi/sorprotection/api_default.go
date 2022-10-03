@@ -12,10 +12,18 @@ package sorprotection
 import (
 	"net/http"
 
+	ausf_context "github.com/free5gc/ausf/internal/context"
+	"github.com/free5gc/openapi"
 	"github.com/gin-gonic/gin"
 )
 
 // SupiUeSorPost -
 func SupiUeSorPost(c *gin.Context) {
+	scopes := []string{"nausf-upuprotection"}
+	_, oauth_err := openapi.CheckOAuth(c.Request.Header.Get("Authorization"), scopes)
+	if oauth_err != nil && ausf_context.GetSelf().OAuth {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": oauth_err.Error()})
+		return
+	}
 	c.JSON(http.StatusOK, gin.H{})
 }

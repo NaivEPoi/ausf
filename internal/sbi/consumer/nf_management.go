@@ -1,7 +1,6 @@
 package consumer
 
 import (
-	"context"
 	"fmt"
 	"net/http"
 	"strings"
@@ -34,7 +33,8 @@ func BuildNFInstance(ausfContext *ausf_context.AUSFContext) (profile models.NfPr
 }
 
 // func SendRegisterNFInstance(nrfUri, nfInstanceId string, profile models.NfProfile) (resouceNrfUri string,
-//    retrieveNfInstanceID string, err error) {
+//
+//	retrieveNfInstanceID string, err error) {
 func SendRegisterNFInstance(nrfUri, nfInstanceId string, profile models.NfProfile) (string, string, error) {
 	configuration := Nnrf_NFManagement.NewConfiguration()
 	configuration.SetBasePath(nrfUri)
@@ -42,7 +42,7 @@ func SendRegisterNFInstance(nrfUri, nfInstanceId string, profile models.NfProfil
 
 	var res *http.Response
 	for {
-		if _, resTmp, err := client.NFInstanceIDDocumentApi.RegisterNFInstance(context.TODO(), nfInstanceId,
+		if _, resTmp, err := client.NFInstanceIDDocumentApi.RegisterNFInstance(openapi.CreateContext(ausf_context.GetSelf().OAuth, ausf_context.GetSelf().NfId, ausf_context.GetSelf().NrfUri, "AUSF"), nfInstanceId,
 			profile); err != nil || resTmp == nil {
 			logger.ConsumerLog.Errorf("AUSF register to NRF Error[%v]", err)
 			time.Sleep(2 * time.Second)
@@ -82,7 +82,7 @@ func SendDeregisterNFInstance() (*models.ProblemDetails, error) {
 	configuration.SetBasePath(ausfSelf.NrfUri)
 	client := Nnrf_NFManagement.NewAPIClient(configuration)
 
-	res, err := client.NFInstanceIDDocumentApi.DeregisterNFInstance(context.Background(), ausfSelf.NfId)
+	res, err := client.NFInstanceIDDocumentApi.DeregisterNFInstance(openapi.CreateContext(ausf_context.GetSelf().OAuth, ausf_context.GetSelf().NfId, ausf_context.GetSelf().NrfUri, "AUSF"), ausfSelf.NfId)
 	if err == nil {
 		return nil, err
 	} else if res != nil {

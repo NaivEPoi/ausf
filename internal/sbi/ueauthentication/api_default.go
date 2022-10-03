@@ -14,6 +14,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	ausf_context "github.com/free5gc/ausf/internal/context"
 	"github.com/free5gc/ausf/internal/logger"
 	"github.com/free5gc/ausf/internal/sbi/producer"
 	"github.com/free5gc/openapi"
@@ -23,6 +24,13 @@ import (
 
 // HTTPEapAuthMethod -
 func HTTPEapAuthMethod(ctx *gin.Context) {
+	scopes := []string{"nausf-auth"}
+	_, oauth_err := openapi.CheckOAuth(ctx.Request.Header.Get("Authorization"), scopes)
+	if oauth_err != nil && ausf_context.GetSelf().OAuth {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": oauth_err.Error()})
+		return
+	}
+
 	var eapSessionReq models.EapSession
 
 	requestBody, err := ctx.GetRawData()
@@ -72,6 +80,13 @@ func HTTPEapAuthMethod(ctx *gin.Context) {
 
 // HTTPUeAuthenticationsAuthCtxID5gAkaConfirmationPut -
 func HTTPUeAuthenticationsAuthCtxID5gAkaConfirmationPut(ctx *gin.Context) {
+	scopes := []string{"nausf-auth"}
+	_, oauth_err := openapi.CheckOAuth(ctx.Request.Header.Get("Authorization"), scopes)
+	if oauth_err != nil && ausf_context.GetSelf().OAuth {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": oauth_err.Error()})
+		return
+	}
+
 	var confirmationData models.ConfirmationData
 
 	requestBody, err := ctx.GetRawData()
@@ -121,6 +136,13 @@ func HTTPUeAuthenticationsAuthCtxID5gAkaConfirmationPut(ctx *gin.Context) {
 
 // HTTPUeAuthenticationsPost -
 func HTTPUeAuthenticationsPost(ctx *gin.Context) {
+	scopes := []string{"nausf-auth"}
+	_, oauth_err := openapi.CheckOAuth(ctx.Request.Header.Get("Authorization"), scopes)
+	if oauth_err != nil && ausf_context.GetSelf().OAuth {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": oauth_err.Error()})
+		return
+	}
+
 	var authInfo models.AuthenticationInfo
 
 	requestBody, err := ctx.GetRawData()

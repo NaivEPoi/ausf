@@ -24,6 +24,7 @@ type AUSFContext struct {
 	UdmUeauUrl           string
 	snRegex              *regexp.Regexp
 	EapAkaSupiImsiPrefix bool
+	OAuth                bool `yaml:"OAuth,omitempty"`
 }
 
 type AusfUeContext struct {
